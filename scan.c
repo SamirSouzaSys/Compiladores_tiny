@@ -56,7 +56,7 @@ static struct
     { char* str;
       TokenType tok;
     } reservedWords[MAXRESERVED]
-   = {{"if",IF},{"then",THEN},{"else",ELSE},{"end",END},
+   = {{"if",IF},{"then",THEN},{"else",ELSE},{"endif",ENDIF},
       {"repeat",REPEAT},{"until",UNTIL},{"read",READ},
       {"write",WRITE}};
 
@@ -73,7 +73,7 @@ static TokenType reservedLookup (char * s)
 /****************************************/
 /* the primary function of the scanner  */
 /****************************************/
-/* function getToken returns the 
+/* function getToken returns the
  * next token in source file
  */
 TokenType getToken(void)

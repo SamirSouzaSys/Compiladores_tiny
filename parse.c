@@ -43,7 +43,7 @@ static void match(TokenType expected)
 TreeNode * stmt_sequence(void)
 { TreeNode * t = statement();
   TreeNode * p = t;
-  while ((token!=ENDFILE) && (token!=END) &&
+  while ((token!=ENDFILE) && (token!=ENDIF) &&
          (token!=ELSE) && (token!=UNTIL))
   { TreeNode * q;
     match(SEMI);
@@ -202,7 +202,7 @@ TreeNode * factor(void)
 /****************************************/
 /* the primary function of the parser   */
 /****************************************/
-/* Function parse returns the newly 
+/* Function parse returns the newly
  * constructed syntax tree
  */
 TreeNode * parse(void)

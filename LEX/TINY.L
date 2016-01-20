@@ -25,7 +25,7 @@ whitespace  [ \t]+
 "if"            {return IF;}
 "then"          {return THEN;}
 "else"          {return ELSE;}
-"end"           {return END;}
+"endif"         {return ENDIF;}
 "repeat"        {return REPEAT;}
 "until"         {return UNTIL;}
 "read"          {return READ;}
