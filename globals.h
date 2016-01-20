@@ -29,7 +29,7 @@ typedef enum
     /* book-keeping tokens */
    {ENDFILE,ERROR,
     /* reserved words */
-    IF,THEN,ELSE,ENDIF,REPEAT,UNTIL,READ,WRITE,
+    IF,THEN,ELSE,ENDIF,REPEAT,UNTIL,FOR,ENDFOR,READ,WRITE,
     /* multicharacter tokens */
     ID,NUM,
     /* special symbols */

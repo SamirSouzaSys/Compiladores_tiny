@@ -28,6 +28,8 @@ whitespace  [ \t]+
 "endif"         {return ENDIF;}
 "repeat"        {return REPEAT;}
 "until"         {return UNTIL;}
+"for"           {return FOR;}
+"endfor"        {return ENDFOR;}
 "read"          {return READ;}
 "write"         {return WRITE;}
 ":="            {return ASSIGN;}

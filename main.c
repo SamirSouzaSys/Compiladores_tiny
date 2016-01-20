@@ -5,7 +5,7 @@
 /* Kenneth C. Louden                                */
 /****************************************************/
 
-#include "GLOBALS.H"
+#include "globals.h"
 
 /* set NO_PARSE to TRUE to get a scanner-only compiler */
 #define NO_PARSE FALSE

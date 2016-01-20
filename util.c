@@ -9,7 +9,7 @@
 #include "globals.h"
 #include "util.h"
 
-/* Procedure printToken prints a token 
+/* Procedure printToken prints a token
  * and its lexeme to the listing file
  */
 void printToken( TokenType token, const char* tokenString )
@@ -20,6 +20,8 @@ void printToken( TokenType token, const char* tokenString )
     case END:
     case REPEAT:
     case UNTIL:
+    case FOR:
+    case ENDFOR:
     case READ:
     case WRITE:
       fprintf(listing,
@@ -71,7 +73,7 @@ TreeNode * newStmtNode(StmtKind kind)
   return t;
 }
 
-/* Function newExpNode creates a new expression 
+/* Function newExpNode creates a new expression
  * node for syntax tree construction
  */
 TreeNode * newExpNode(ExpKind kind)
@@ -121,7 +123,7 @@ static void printSpaces(void)
     fprintf(listing," ");
 }
 
-/* procedure printTree prints a syntax tree to the 
+/* procedure printTree prints a syntax tree to the
  * listing file using indentation to indicate subtrees
  */
 void printTree( TreeNode * tree )
