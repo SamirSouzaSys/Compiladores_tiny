@@ -133,9 +133,6 @@ TokenType getToken(void)
              case ')':
                currentToken = RPAREN;
                break;
-             case ';':
-               currentToken = SEMI;
-               break;
              default:
                currentToken = ERROR;
                break;

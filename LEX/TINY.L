@@ -41,7 +41,6 @@ whitespace  [ \t]+
 "/"             {return OVER;}
 "("             {return LPAREN;}
 ")"             {return RPAREN;}
-";"             {return SEMI;}
 {number}        {return NUM;}
 {identifier}    {return ID;}
 {newline}       {lineno++;}

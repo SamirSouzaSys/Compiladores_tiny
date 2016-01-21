@@ -46,7 +46,7 @@ TreeNode * stmt_sequence(void)
   while ((token!=ENDFILE) && (token!=ENDIF) &&
          (token!=ELSE) && (token!=UNTIL))
   { TreeNode * q;
-    match(SEMI);
+    //match(SEMI);
     q = statement();
     if (q!=NULL) {
       if (t==NULL) t = p = q;
@@ -85,7 +85,7 @@ TreeNode * if_stmt(void)
     match(ELSE);
     if (t!=NULL) t->child[2] = stmt_sequence();
   }
-  match(END);
+  match(ENDIF);
   return t;
 }
 

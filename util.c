@@ -17,7 +17,7 @@ void printToken( TokenType token, const char* tokenString )
   { case IF:
     case THEN:
     case ELSE:
-    case END:
+    case ENDIF:
     case REPEAT:
     case UNTIL:
     case FOR:
@@ -32,7 +32,6 @@ void printToken( TokenType token, const char* tokenString )
     case EQ: fprintf(listing,"=\n"); break;
     case LPAREN: fprintf(listing,"(\n"); break;
     case RPAREN: fprintf(listing,")\n"); break;
-    case SEMI: fprintf(listing,";\n"); break;
     case PLUS: fprintf(listing,"+\n"); break;
     case MINUS: fprintf(listing,"-\n"); break;
     case TIMES: fprintf(listing,"*\n"); break;
