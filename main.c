@@ -8,7 +8,7 @@
 #include "globals.h"
 
 /* set NO_PARSE to TRUE to get a scanner-only compiler */
-#define NO_PARSE FALSE
+#define NO_PARSE TRUE
 /* set NO_ANALYZE to TRUE to get a parser-only compiler */
 #define NO_ANALYZE FALSE
 
@@ -38,7 +38,7 @@ FILE * code;
 
 /* allocate and set tracing flags */
 int EchoSource = FALSE;
-int TraceScan = FALSE;
+int TraceScan = TRUE;
 int TraceParse = FALSE;
 int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
@@ -48,11 +48,13 @@ int Error = FALSE;
 main( int argc, char * argv[] )
 { TreeNode * syntaxTree;
   char pgm[120]; /* source code file name */
-  if (argc != 2)
-    { fprintf(stderr,"usage: %s <filename>\n",argv[0]);
-      exit(1);
-    }
-  strcpy(pgm,argv[1]) ;
+  // if (argc != 2)
+  //   { fprintf(stderr,"usage: %s <filename>\n",argv[0]);
+  //     exit(1);
+  //   }
+  // strcpy(pgm,argv[1]) ;
+  // strcpy(pgm,"sample.tny") ;
+  strcpy(pgm,"/home/samirsouza/Music/Compiladores_tiny/sample2.tny");
   if (strchr (pgm, '.') == NULL)
      strcat(pgm,".tny");
   source = fopen(pgm,"r");
