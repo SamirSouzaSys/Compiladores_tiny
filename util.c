@@ -33,6 +33,7 @@ void printToken( TokenType token, const char* tokenString )
     case LPAREN: fprintf(listing,"(\n"); break;
     case RPAREN: fprintf(listing,")\n"); break;
     case PLUS: fprintf(listing,"+\n"); break;
+    case COMMA: fprintf(listing,",\n"); break;
     case MINUS: fprintf(listing,"-\n"); break;
     case TIMES: fprintf(listing,"*\n"); break;
     case OVER: fprintf(listing,"/\n"); break;
@@ -137,6 +138,9 @@ void printTree( TreeNode * tree )
           break;
         case RepeatK:
           fprintf(listing,"Repeat\n");
+          break;
+        case ForK:
+          fprintf(listing,"For\n");
           break;
         case AssignK:
           fprintf(listing,"Assign to: %s\n",tree->attr.name);

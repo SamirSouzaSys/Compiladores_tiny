@@ -96,6 +96,7 @@ TokenType getToken(void)
            state = INID;
          else if (c == ':')
            state = INASSIGN;
+         // else if ((c == ' ') || (c == '\t') || (c == '\n')) Devo retirar /n
          else if ((c == ' ') || (c == '\t') || (c == '\n'))
            save = FALSE;
          else if (c == '{')
@@ -133,6 +134,9 @@ TokenType getToken(void)
              case ')':
                currentToken = RPAREN;
                break;
+             case ',':
+               currentToken = COMMA;
+               break;
              default:
                currentToken = ERROR;
                break;
@@ -168,7 +172,8 @@ TokenType getToken(void)
          }
          break;
        case INID:
-         if (!isalpha(c))
+          //Reconhecimento do Dígito mesmo possuindo o '_' (underline)
+         if (!isalpha(c) && !isdigit(c) && !((char)c == '_'))
          { /* backup in the input */
            ungetNextChar();
            save = FALSE;

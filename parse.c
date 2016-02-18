@@ -17,6 +17,7 @@ static TreeNode * stmt_sequence(void);
 static TreeNode * statement(void);
 static TreeNode * if_stmt(void);
 static TreeNode * repeat_stmt(void);
+static TreeNode * for_stmt(void);
 static TreeNode * assign_stmt(void);
 static TreeNode * read_stmt(void);
 static TreeNode * write_stmt(void);
@@ -43,7 +44,7 @@ static void match(TokenType expected)
 TreeNode * stmt_sequence(void)
 { TreeNode * t = statement();
   TreeNode * p = t;
-  while ((token!=ENDFILE) && (token!=ENDIF) &&
+  while ((token!=ENDFILE) && (token!=ENDIF) && (token!=ENDFOR) &&
          (token!=ELSE) && (token!=UNTIL))
   { TreeNode * q;
     //match(SEMI);
@@ -64,6 +65,7 @@ TreeNode * statement(void)
   switch (token) {
     case IF : t = if_stmt(); break;
     case REPEAT : t = repeat_stmt(); break;
+    case FOR : t = for_stmt(); break;
     case ID : t = assign_stmt(); break;
     case READ : t = read_stmt(); break;
     case WRITE : t = write_stmt(); break;
@@ -95,6 +97,73 @@ TreeNode * repeat_stmt(void)
   if (t!=NULL) t->child[0] = stmt_sequence();
   match(UNTIL);
   if (t!=NULL) t->child[1] = exp();
+  return t;
+}
+
+/*for (variável, valor_inicial, valor_final)
+<corpo>
+endfor*/
+
+TreeNode * for_stmt(void)
+{ TreeNode * t = newStmtNode(ForK);
+  match(FOR);
+  if (t!=NULL){// if (token!=NULL){
+    match(LPAREN);
+    if (t!=NULL){//(token!=NULL){
+      match(ID);
+      if (t!=NULL){ //(token!=NULL){
+        match(COMMA);
+        if (t!=NULL){ //(token!=NULL){
+          match(NUM);
+          if (t!=NULL){ //(token!=NULL){
+            match(COMMA);
+            if (t!=NULL){ //(token!=NULL){
+              match(NUM);
+              if (t!=NULL){ //(token!=NULL){
+                match(RPAREN);
+                if (t!=NULL){ //(token!=NULL){
+                  t->child[0] = stmt_sequence();
+                  // match(ENDFOR);
+                }else{
+                  syntaxError("unexpected token -> ");
+                  printToken(token,tokenString);
+                  fprintf(listing,"      ");
+                }
+              }else{
+                syntaxError("unexpected token -> ");
+                printToken(token,tokenString);
+                fprintf(listing,"      ");
+              }
+            }else{
+              syntaxError("unexpected token -> ");
+              printToken(token,tokenString);
+              fprintf(listing,"      ");
+            }
+          }else{
+            syntaxError("Inside FOR_unexpected token -> ");
+            printToken(token,tokenString);
+            fprintf(listing,"      ");
+          }
+        }else{
+          syntaxError("unexpected token -> ");
+          printToken(token,tokenString);
+          fprintf(listing,"      ");
+        }
+      }else{
+        syntaxError("unexpected token -> ");
+        printToken(token,tokenString);
+        fprintf(listing,"      ");
+      }
+    }else{
+      syntaxError("unexpected token -> ");
+      printToken(token,tokenString);
+      fprintf(listing,"      ");
+    }
+  }else{
+    syntaxError("unexpected token -> ");
+    printToken(token,tokenString);
+    fprintf(listing,"      ");
+  }match(ENDFOR);
   return t;
 }
 

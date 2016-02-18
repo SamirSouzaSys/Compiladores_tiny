@@ -1,0 +1,11 @@
+{ Sample program
+  in TINY language -
+  computes factorial
+}
+read_1
+for
+endfor
+for1
+for___1
+x;
+
