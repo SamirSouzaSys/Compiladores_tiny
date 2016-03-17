@@ -18,10 +18,8 @@ static int location = 0;
  * it applies preProc in preorder and postProc
  * in postorder to tree pointed to by t
  */
-static void traverse( TreeNode * t,
-               void (* preProc) (TreeNode *),
-               void (* postProc) (TreeNode *) )
-{ if (t != NULL)
+static void traverse( TreeNode * t, void (* preProc) (TreeNode *), void (* postProc) (TreeNode *) ){
+  if (t != NULL)
   { preProc(t);
     { int i;
       for (i=0; i < MAXCHILDREN; i++)
@@ -32,21 +30,15 @@ static void traverse( TreeNode * t,
   }
 }
 
-/* nullProc is a do-nothing procedure to
- * generate preorder-only or postorder-only
- * traversals from traverse
- */
-static void nullProc(TreeNode * t)
-{ if (t==NULL) return;
+/* nullProc is a do-nothing procedure to generate preorder-only or postorder-only traversals from traverse */
+static void nullProc(TreeNode * t){
+  if (t==NULL) return;
   else return;
 }
 
-/* Procedure insertNode inserts
- * identifiers stored in t into
- * the symbol table
- */
-static void insertNode( TreeNode * t)
-{ switch (t->nodekind)
+/* Procedure insertNode inserts identifiers stored in t into the symbol table */
+static void insertNode( TreeNode * t){
+  switch (t->nodekind)
   { case StmtK:
       switch (t->kind.stmt)
       { case AssignK:
@@ -83,27 +75,23 @@ static void insertNode( TreeNode * t)
   }
 }
 
-/* Function buildSymtab constructs the symbol
- * table by preorder traversal of the syntax tree
- */
-void buildSymtab(TreeNode * syntaxTree)
-{ traverse(syntaxTree,insertNode,nullProc);
+/* Function buildSymtab constructs the symbol table by preorder traversal of the syntax tree */
+void buildSymtab(TreeNode * syntaxTree){
+  traverse(syntaxTree,insertNode,nullProc);
   if (TraceAnalyze)
   { fprintf(listing,"\nSymbol table:\n\n");
     printSymTab(listing);
   }
 }
 
-static void typeError(TreeNode * t, char * message)
-{ fprintf(listing,"Type error at line %d: %s\n",t->lineno,message);
+static void typeError(TreeNode * t, char * message){
+  fprintf(listing,"Type error at line %d: %s\n",t->lineno,message);
   Error = TRUE;
 }
 
-/* Procedure checkNode performs
- * type checking at a single tree node
- */
-static void checkNode(TreeNode * t)
-{ switch (t->nodekind)
+/* Procedure checkNode performs type checking at a single tree node */
+static void checkNode(TreeNode * t){
+  switch (t->nodekind)
   { case ExpK:
       switch (t->kind.exp)
       { case OpK:
@@ -141,6 +129,10 @@ static void checkNode(TreeNode * t)
           if (t->child[1]->type == Integer)
             typeError(t->child[1],"repeat test is not Boolean");
           break;
+        case ForK:
+          if (t->child[1]->type == Integer)
+            typeError(t->child[1],"FOR test is not Boolean");
+          break;
         default:
           break;
       }
@@ -154,6 +146,6 @@ static void checkNode(TreeNode * t)
 /* Procedure typeCheck performs type checking
  * by a postorder syntax tree traversal
  */
-void typeCheck(TreeNode * syntaxTree)
-{ traverse(syntaxTree,nullProc,checkNode);
+void typeCheck(TreeNode * syntaxTree){
+  traverse(syntaxTree,nullProc,checkNode);
 }

@@ -26,14 +26,14 @@ static TreeNode * simple_exp(void);
 static TreeNode * term(void);
 static TreeNode * factor(void);
 
-static void syntaxError(char * message)
-{ fprintf(listing,"\n>>> ");
+static void syntaxError(char * message){
+  fprintf(listing,"\n>>> ");
   fprintf(listing,"Syntax error at line %d: %s",lineno,message);
   Error = TRUE;
 }
 
-static void match(TokenType expected)
-{ if (token == expected) token = getToken();
+static void match(TokenType expected){
+  if (token == expected) token = getToken();
   else {
     syntaxError("unexpected token -> ");
     printToken(token,tokenString);
@@ -41,11 +41,12 @@ static void match(TokenType expected)
   }
 }
 
-TreeNode * stmt_sequence(void)
-{ TreeNode * t = statement();
+TreeNode * stmt_sequence(void){
+  TreeNode * t = statement();
   TreeNode * p = t;
-  while ((token!=ENDFILE) && (token!=ENDIF) && (token!=ENDFOR) &&
-         (token!=ELSE) && (token!=UNTIL))
+  while ((token!=ENDFILE) && (token!=ENDIF) &&
+         (token!=ENDFOR) && (token!=ELSE) &&
+         (token!=UNTIL))
   { TreeNode * q;
     //match(SEMI);
     q = statement();
@@ -60,8 +61,8 @@ TreeNode * stmt_sequence(void)
   return t;
 }
 
-TreeNode * statement(void)
-{ TreeNode * t = NULL;
+TreeNode * statement(void){
+  TreeNode * t = NULL;
   switch (token) {
     case IF : t = if_stmt(); break;
     case REPEAT : t = repeat_stmt(); break;
@@ -77,8 +78,8 @@ TreeNode * statement(void)
   return t;
 }
 
-TreeNode * if_stmt(void)
-{ TreeNode * t = newStmtNode(IfK);
+TreeNode * if_stmt(void){
+  TreeNode * t = newStmtNode(IfK);
   match(IF);
   if (t!=NULL) t->child[0] = exp();
   match(THEN);
@@ -91,8 +92,8 @@ TreeNode * if_stmt(void)
   return t;
 }
 
-TreeNode * repeat_stmt(void)
-{ TreeNode * t = newStmtNode(RepeatK);
+TreeNode * repeat_stmt(void){
+  TreeNode * t = newStmtNode(RepeatK);
   match(REPEAT);
   if (t!=NULL) t->child[0] = stmt_sequence();
   match(UNTIL);
@@ -100,75 +101,27 @@ TreeNode * repeat_stmt(void)
   return t;
 }
 
-/*for (variável, valor_inicial, valor_final)
-<corpo>
-endfor*/
+/*for (variável, valor_inicial, valor_final) <corpo> endfor*/
+// for (int i = 0; i < count; i = i + 1){  code  }
 
-TreeNode * for_stmt(void)
-{ TreeNode * t = newStmtNode(ForK);
+TreeNode * for_stmt(void){
+  TreeNode * t = newStmtNode(ForK);
   match(FOR);
-  if (t!=NULL){// if (token!=NULL){
-    match(LPAREN);
-    if (t!=NULL){//(token!=NULL){
-      match(ID);
-      if (t!=NULL){ //(token!=NULL){
-        match(COMMA);
-        if (t!=NULL){ //(token!=NULL){
-          match(NUM);
-          if (t!=NULL){ //(token!=NULL){
-            match(COMMA);
-            if (t!=NULL){ //(token!=NULL){
-              match(NUM);
-              if (t!=NULL){ //(token!=NULL){
-                match(RPAREN);
-                if (t!=NULL){ //(token!=NULL){
-                  t->child[0] = stmt_sequence();
-                  // match(ENDFOR);
-                }else{
-                  syntaxError("unexpected token -> ");
-                  printToken(token,tokenString);
-                  fprintf(listing,"      ");
-                }
-              }else{
-                syntaxError("unexpected token -> ");
-                printToken(token,tokenString);
-                fprintf(listing,"      ");
-              }
-            }else{
-              syntaxError("unexpected token -> ");
-              printToken(token,tokenString);
-              fprintf(listing,"      ");
-            }
-          }else{
-            syntaxError("Inside FOR_unexpected token -> ");
-            printToken(token,tokenString);
-            fprintf(listing,"      ");
-          }
-        }else{
-          syntaxError("unexpected token -> ");
-          printToken(token,tokenString);
-          fprintf(listing,"      ");
-        }
-      }else{
-        syntaxError("unexpected token -> ");
-        printToken(token,tokenString);
-        fprintf(listing,"      ");
-      }
-    }else{
-      syntaxError("unexpected token -> ");
-      printToken(token,tokenString);
-      fprintf(listing,"      ");
-    }
-  }else{
-    syntaxError("unexpected token -> ");
-    printToken(token,tokenString);
-    fprintf(listing,"      ");
-  }match(ENDFOR);
+  match(LPAREN);
+  if (t!=NULL) t->child[0] = assign_stmt(); //assign
+  match(COMMA);
+  if (t!=NULL) t->child[1] = exp(); //1 //teste
+  match(COMMA);
+  if (t!=NULL) t->child[2] = stmt_sequence(); //2 //incremento
+  match(RPAREN);
+  if (t!=NULL) t->child[3] = stmt_sequence(); //3 //corpo
+  match(ENDFOR);
+
   return t;
 }
 
-TreeNode * assign_stmt(void)
-{ TreeNode * t = newStmtNode(AssignK);
+TreeNode * assign_stmt(void){
+  TreeNode * t = newStmtNode(AssignK);
   if ((t!=NULL) && (token==ID))
     t->attr.name = copyString(tokenString);
   match(ID);
@@ -177,8 +130,8 @@ TreeNode * assign_stmt(void)
   return t;
 }
 
-TreeNode * read_stmt(void)
-{ TreeNode * t = newStmtNode(ReadK);
+TreeNode * read_stmt(void){
+  TreeNode * t = newStmtNode(ReadK);
   match(READ);
   if ((t!=NULL) && (token==ID))
     t->attr.name = copyString(tokenString);
@@ -186,15 +139,15 @@ TreeNode * read_stmt(void)
   return t;
 }
 
-TreeNode * write_stmt(void)
-{ TreeNode * t = newStmtNode(WriteK);
+TreeNode * write_stmt(void){
+  TreeNode * t = newStmtNode(WriteK);
   match(WRITE);
   if (t!=NULL) t->child[0] = exp();
   return t;
 }
 
-TreeNode * exp(void)
-{ TreeNode * t = simple_exp();
+TreeNode * exp(void){
+  TreeNode * t = simple_exp();
   if ((token==LT)||(token==EQ)) {
     TreeNode * p = newExpNode(OpK);
     if (p!=NULL) {
@@ -209,8 +162,8 @@ TreeNode * exp(void)
   return t;
 }
 
-TreeNode * simple_exp(void)
-{ TreeNode * t = term();
+TreeNode * simple_exp(void){
+  TreeNode * t = term();
   while ((token==PLUS)||(token==MINUS))
   { TreeNode * p = newExpNode(OpK);
     if (p!=NULL) {
@@ -224,8 +177,8 @@ TreeNode * simple_exp(void)
   return t;
 }
 
-TreeNode * term(void)
-{ TreeNode * t = factor();
+TreeNode * term(void){
+  TreeNode * t = factor();
   while ((token==TIMES)||(token==OVER))
   { TreeNode * p = newExpNode(OpK);
     if (p!=NULL) {
@@ -239,8 +192,8 @@ TreeNode * term(void)
   return t;
 }
 
-TreeNode * factor(void)
-{ TreeNode * t = NULL;
+TreeNode * factor(void){
+  TreeNode * t = NULL;
   switch (token) {
     case NUM :
       t = newExpNode(ConstK);

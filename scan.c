@@ -17,8 +17,7 @@ typedef enum
 /* lexeme of identifier or reserved word */
 char tokenString[MAXTOKENLEN+1];
 
-/* BUFLEN = length of the input buffer for
-   source code lines */
+/* BUFLEN = length of the input buffer for source code lines */
 #define BUFLEN 256
 
 static char lineBuf[BUFLEN]; /* holds the current line */
@@ -33,7 +32,7 @@ static int getNextChar(void)
 { if (!(linepos < bufsize))
   { lineno++;
     if (fgets(lineBuf,BUFLEN-1,source))
-    { if (EchoSource) fprintf(listing,"%4d: %s",lineno,lineBuf);
+    { if (EchoSource) fprintf(listing,"____%4d: %s",lineno,lineBuf);
       bufsize = strlen(lineBuf);
       linepos = 0;
       return lineBuf[linepos++];
@@ -52,13 +51,16 @@ static void ungetNextChar(void)
 { if (!EOF_flag) linepos-- ;}
 
 /* lookup table of reserved words */
-static struct
-    { char* str;
-      TokenType tok;
-    } reservedWords[MAXRESERVED]
-   = {{"if",IF},{"then",THEN},{"else",ELSE},{"endif",ENDIF},
-      {"repeat",REPEAT},{"until",UNTIL},{"for",FOR},{"endfor",ENDFOR},{"read",READ},
-      {"write",WRITE}};
+static struct{
+    char* str;
+    TokenType tok;
+  }
+  reservedWords[MAXRESERVED] = {
+    {"if",IF},{"then",THEN},{"else",ELSE},{"endif",ENDIF},
+    {"repeat",REPEAT},{"until",UNTIL},
+    {"for",FOR},{"endfor",ENDFOR},
+    {"read",READ},{"write",WRITE}
+  };
 
 /* lookup an identifier to see if it is a reserved word */
 /* uses linear search */

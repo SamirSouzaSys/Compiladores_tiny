@@ -22,12 +22,11 @@ static int tmpOffset = 0;
 static void cGen (TreeNode * tree);
 
 /* Procedure genStmt generates code at a statement node */
-static void genStmt( TreeNode * tree)
-{ TreeNode * p1, * p2, * p3;
+static void genStmt( TreeNode * tree) {
+  TreeNode * p1, * p2, * p3, * p4;
   int savedLoc1,savedLoc2,currentLoc;
   int loc;
   switch (tree->kind.stmt) {
-
       case IfK :
          if (TraceCode) emitComment("-> if") ;
          p1 = tree->child[0] ;
@@ -40,7 +39,7 @@ static void genStmt( TreeNode * tree)
          /* recurse on then part */
          cGen(p2);
          savedLoc2 = emitSkip(1) ;
-         emitComment("if: jump to end belongs here");
+         emitComment("if: jump to endIf belongs here");
          currentLoc = emitSkip(0) ;
          emitBackup(savedLoc1) ;
          emitRM_Abs("JEQ",ac,currentLoc,"if: jmp to else");
@@ -49,7 +48,7 @@ static void genStmt( TreeNode * tree)
          cGen(p3);
          currentLoc = emitSkip(0) ;
          emitBackup(savedLoc2) ;
-         emitRM_Abs("LDA",pc,currentLoc,"jmp to end") ;
+         emitRM_Abs("LDA",pc,currentLoc,"jmp to endIf") ;
          emitRestore() ;
          if (TraceCode)  emitComment("<- if") ;
          break; /* if_k */
@@ -67,6 +66,48 @@ static void genStmt( TreeNode * tree)
          emitRM_Abs("JEQ",ac,savedLoc1,"repeat: jmp back to body");
          if (TraceCode)  emitComment("<- repeat") ;
          break; /* repeat */
+      case ForK :
+         if (TraceCode) emitComment("-> for") ;
+         p0 = tree->child[0];
+         p1 = tree->child[1];
+         p2 = tree->child[2];
+         p3 = tree->child[3];
+
+         // for (int i = 0; i < count; i = i + 1){  code  }
+         /* generate code for assign_stmt */
+         cGen(p0);
+
+         savedLoc1 = emitSkip(0);
+         /* generate code for expression */
+         cGen(p1);
+
+         savedLoc2 = emitSkip(1);
+         /* generate code for stmt_sequence_INCREMENTO */
+         cGen(p2);
+
+        savedLoc3 = emitSkip(1);
+
+         /* generate code for stmt_sequence_CORPO */
+         cGen(p3);
+
+         savedLoc1 = emitSkip(1) ;
+         emitComment("for: jump to else belongs here");
+         /* recurse on then part */
+         cGen(p2);
+         savedLoc2 = emitSkip(1) ;
+         emitComment("for: jump to end belongs here");
+         currentLoc = emitSkip(0) ;
+         emitBackup(savedLoc1) ;
+         emitRM_Abs("JEQ",ac,currentLoc,"if: jmp to else");
+         emitRestore() ;
+         /* recurse on else part */
+         cGen(p3);
+         currentLoc = emitSkip(0) ;
+         emitBackup(savedLoc2) ;
+         emitRM_Abs("LDA",pc,currentLoc,"jmp to end") ;
+         emitRestore() ;
+         if (TraceCode)  emitComment("<- if") ;
+         break; /* for_k */
 
       case AssignK:
          if (TraceCode) emitComment("-> assign") ;
@@ -83,20 +124,22 @@ static void genStmt( TreeNode * tree)
          loc = st_lookup(tree->attr.name);
          emitRM("ST",ac,loc,gp,"read: store value");
          break;
+
       case WriteK:
          /* generate code for expression to write */
          cGen(tree->child[0]);
          /* now output it */
          emitRO("OUT",ac,0,0,"write ac");
          break;
+
       default:
          break;
     }
 } /* genStmt */
 
 /* Procedure genExp generates code at an expression node */
-static void genExp( TreeNode * tree)
-{ int loc;
+static void genExp( TreeNode * tree){
+  int loc;
   TreeNode * p1, * p2;
   switch (tree->kind.exp) {
 
@@ -106,7 +149,7 @@ static void genExp( TreeNode * tree)
       emitRM("LDC",ac,tree->attr.val,0,"load const");
       if (TraceCode)  emitComment("<- Const") ;
       break; /* ConstK */
-    
+
     case IdK :
       if (TraceCode) emitComment("-> Id") ;
       loc = st_lookup(tree->attr.name);
@@ -165,12 +208,10 @@ static void genExp( TreeNode * tree)
   }
 } /* genExp */
 
-/* Procedure cGen recursively generates code by
- * tree traversal
- */
-static void cGen( TreeNode * tree)
-{ if (tree != NULL)
-  { switch (tree->nodekind) {
+/* Procedure cGen recursively generates code by tree traversal */
+static void cGen( TreeNode * tree){
+  if (tree != NULL){
+    switch (tree->nodekind){
       case StmtK:
         genStmt(tree);
         break;
@@ -187,14 +228,12 @@ static void cGen( TreeNode * tree)
 /**********************************************/
 /* the primary function of the code generator */
 /**********************************************/
-/* Procedure codeGen generates code to a code
- * file by traversal of the syntax tree. The
- * second parameter (codefile) is the file name
- * of the code file, and is used to print the
+/* Procedure codeGen generates code to a code file by traversal of the syntax tree. The
+ * second parameter (codefile) is the file name of the code file, and is used to print the
  * file name as a comment in the code file
  */
-void codeGen(TreeNode * syntaxTree, char * codefile)
-{  char * s = malloc(strlen(codefile)+7);
+void codeGen(TreeNode * syntaxTree, char * codefile){
+   char * s = malloc(strlen(codefile)+7);
    strcpy(s,"File: ");
    strcat(s,codefile);
    emitComment("TINY Compilation to TM Code");

@@ -17,7 +17,7 @@ static int emitLoc = 0 ;
    emitBackup, and emitRestore */
 static int highEmitLoc = 0;
 
-/* Procedure emitComment prints a comment line 
+/* Procedure emitComment prints a comment line
  * with comment c in the code file
  */
 void emitComment( char * c )
@@ -32,7 +32,7 @@ void emitComment( char * c )
  * c = a comment to be printed if TraceCode is TRUE
  */
 void emitRO( char *op, int r, int s, int t, char *c)
-{ fprintf(code,"%3d:  %5s  %d,%d,%d ",emitLoc++,op,r,s,t);
+{ fprintf(code,"%7d:  %5s  %d,%d,%d ",emitLoc++,op,r,s,t);
   if (TraceCode) fprintf(code,"\t%s",c) ;
   fprintf(code,"\n") ;
   if (highEmitLoc < emitLoc) highEmitLoc = emitLoc ;
@@ -47,7 +47,7 @@ void emitRO( char *op, int r, int s, int t, char *c)
  * c = a comment to be printed if TraceCode is TRUE
  */
 void emitRM( char * op, int r, int d, int s, char *c)
-{ fprintf(code,"%3d:  %5s  %d,%d(%d) ",emitLoc++,op,r,d,s);
+{ fprintf(code,"%7d:  %5s  %d,%d(%d) ",emitLoc++,op,r,d,s);
   if (TraceCode) fprintf(code,"\t%s",c) ;
   fprintf(code,"\n") ;
   if (highEmitLoc < emitLoc)  highEmitLoc = emitLoc ;
@@ -64,7 +64,7 @@ int emitSkip( int howMany)
    return i;
 } /* emitSkip */
 
-/* Procedure emitBackup backs up to 
+/* Procedure emitBackup backs up to
  * loc = a previously skipped location
  */
 void emitBackup( int loc)
@@ -72,14 +72,14 @@ void emitBackup( int loc)
   emitLoc = loc ;
 } /* emitBackup */
 
-/* Procedure emitRestore restores the current 
+/* Procedure emitRestore restores the current
  * code position to the highest previously
  * unemitted position
  */
 void emitRestore(void)
 { emitLoc = highEmitLoc;}
 
-/* Procedure emitRM_Abs converts an absolute reference 
+/* Procedure emitRM_Abs converts an absolute reference
  * to a pc-relative reference when emitting a
  * register-to-memory TM instruction
  * op = the opcode
@@ -87,8 +87,8 @@ void emitRestore(void)
  * a = the absolute location in memory
  * c = a comment to be printed if TraceCode is TRUE
  */
-void emitRM_Abs( char *op, int r, int a, char * c)
-{ fprintf(code,"%3d:  %5s  %d,%d(%d) ",
+void emitRM_Abs( char *op, int r, int a, char * c){
+  fprintf(code,"%7d:  %5s  %d,%d(%d) ",
                emitLoc,op,r,a-(emitLoc+1),pc);
   ++emitLoc ;
   if (TraceCode) fprintf(code,"\t%s",c) ;

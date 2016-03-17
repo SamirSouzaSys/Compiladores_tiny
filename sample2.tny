@@ -1,13 +1,19 @@
 { Sample program in TINY language - computes factorial }
 read x { input an integer }
 if 0 < x then { don't compute if x <= 0 }
-  fact := 1
+  fact := 2
+
   repeat
     fact := fact * x
     x := x - 1
   until x = 0
+
   write fact  { output factorial of x }
 endif
-for(y, 1, 3)
-  gg := 14
+
+for(y := 0 , y < 3 , y := y + 1)
+  gg := 1
+  gg := 2
+  gg := 3
+  gg := gg+1
 endfor
