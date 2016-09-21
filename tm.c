@@ -236,7 +236,7 @@ int readInstructions (void)
   lineNo = 0 ;
   while (! feof(pgm))
   { fgets( in_Line, LINESIZE-2, pgm  ) ;
-    inCol = 0 ; 
+    inCol = 0 ;
     lineNo++;
     lineLen = strlen(in_Line)-1 ;
     if (in_Line[lineLen]=='\n') in_Line[lineLen] = '\0' ;
@@ -268,7 +268,7 @@ int readInstructions (void)
         if ( (! getNum ()) || (num < 0) || (num >= NO_REGS) )
             return error("Bad second register", lineNo, loc);
         arg2 = num;
-        if ( ! skipCh(',')) 
+        if ( ! skipCh(','))
             return error("Missing comma", lineNo,loc);
         if ( (! getNum ()) || (num < 0) || (num >= NO_REGS) )
             return error("Bad third register", lineNo,loc);
@@ -364,7 +364,7 @@ STEPRESULT stepTM (void)
       while (! ok);
       break;
 
-    case opOUT :  
+    case opOUT :
       printf ("OUT instruction prints: %d\n", reg[r] ) ;
       break;
     case opADD :  reg[r] = reg[s] + reg[t] ;  break;
@@ -558,11 +558,13 @@ int doCommand (void)
 /********************************************/
 
 main( int argc, char * argv[] )
-{ if (argc != 2)
-  { printf("usage: %s <filename>\n",argv[0]);
-    exit(1);
-  }
-  strcpy(pgmName,argv[1]) ;
+{
+  // if (argc != 2)
+  // { printf("usage: %s <filename>\n",argv[0]);
+  //   exit(1);
+  // }
+  // strcpy(pgmName,argv[1]) ;
+  strcpy(pgmName,"/home/samirsouza/Code/Compiladores_tiny/sample2.tm"); ////////////////////////////////////////////////////
   if (strchr (pgmName, '.') == NULL)
      strcat(pgmName,".tm");
   pgm = fopen(pgmName,"r");

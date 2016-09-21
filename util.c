@@ -120,8 +120,8 @@ void printTree( TreeNode * tree )
   INDENT;
   while (tree != NULL) {
     printSpaces();
-    if (tree->nodekind==StmtK)
-    { switch (tree->kind.stmt) {
+    if (tree->nodekind==StmtK){
+      switch (tree->kind.stmt) {
         case IfK:
           fprintf(listing,"If\n");
           break;
@@ -145,8 +145,8 @@ void printTree( TreeNode * tree )
           break;
       }
     }
-    else if (tree->nodekind==ExpK)
-    { switch (tree->kind.exp) {
+    else if (tree->nodekind==ExpK){
+      switch (tree->kind.exp) {
         case OpK:
           fprintf(listing,"Op: ");
           printToken(tree->attr.op,"\0");

@@ -29,9 +29,7 @@ static void genStmt( TreeNode * tree) {
   switch (tree->kind.stmt) {
       case IfK :
          if (TraceCode) emitComment("-> if") ;
-         p1 = tree->child[0] ;
-         p2 = tree->child[1] ;
-         p3 = tree->child[2] ;
+         p1 = tree->child[0]; p2 = tree->child[1]; p3 = tree->child[2];
          /* generate code for test expression */
          cGen(p1);
          savedLoc1 = emitSkip(1) ;
@@ -66,48 +64,40 @@ static void genStmt( TreeNode * tree) {
          emitRM_Abs("JEQ",ac,savedLoc1,"repeat: jmp back to body");
          if (TraceCode)  emitComment("<- repeat") ;
          break; /* repeat */
+
       case ForK :
          if (TraceCode) emitComment("-> for") ;
-         p0 = tree->child[0];
-         p1 = tree->child[1];
-         p2 = tree->child[2];
-         p3 = tree->child[3];
+         p1 = tree->child[0]; //receive assignment
+         p2 = tree->child[1]; //receive test
+         p3 = tree->child[3]; //receive body
+         p4 = tree->child[2]; //receive increment
 
-         // for (int i = 0; i < count; i = i + 1){  code  }
+         // for (P0 int i = 0; SL1 P1 i < count; SL2 P2 i = i + 1){SL3  P3 code  SL4}
          /* generate code for assign_stmt */
-         cGen(p0);
-
-         savedLoc1 = emitSkip(0);
-         /* generate code for expression */
          cGen(p1);
 
-         savedLoc2 = emitSkip(1);
-         /* generate code for stmt_sequence_INCREMENTO */
-         cGen(p2);
+         /* generate code for expression */
+         savedLoc1 = emitSkip(0);
+         emitComment("for: jump back to begin");
 
-        savedLoc3 = emitSkip(1);
+         cGen(p2);
+         savedLoc2 = emitSkip(1) ;
+         emitComment("for: jump to out belongs here");
 
          /* generate code for stmt_sequence_CORPO */
          cGen(p3);
+         /* generate code for stmt_sequence_INCREMENTO */
+         cGen(p4);
 
-         savedLoc1 = emitSkip(1) ;
-         emitComment("for: jump to else belongs here");
-         /* recurse on then part */
-         cGen(p2);
-         savedLoc2 = emitSkip(1) ;
-         emitComment("for: jump to end belongs here");
-         currentLoc = emitSkip(0) ;
-         emitBackup(savedLoc1) ;
-         emitRM_Abs("JEQ",ac,currentLoc,"if: jmp to else");
-         emitRestore() ;
-         /* recurse on else part */
-         cGen(p3);
+         emitRM_Abs("LDA",pc,savedLoc1,"jmp to test") ;
+
          currentLoc = emitSkip(0) ;
          emitBackup(savedLoc2) ;
-         emitRM_Abs("LDA",pc,currentLoc,"jmp to end") ;
-         emitRestore() ;
-         if (TraceCode)  emitComment("<- if") ;
-         break; /* for_k */
+         emitRM_Abs("JEQ",ac,currentLoc,"for: jmp to test");
+
+         emitRestore();
+         if (TraceCode) emitComment("-> for") ;
+        break;
 
       case AssignK:
          if (TraceCode) emitComment("-> assign") ;

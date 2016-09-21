@@ -112,7 +112,7 @@ TreeNode * for_stmt(void){
   match(COMMA);
   if (t!=NULL) t->child[1] = exp(); //1 //teste
   match(COMMA);
-  if (t!=NULL) t->child[2] = stmt_sequence(); //2 //incremento
+  if (t!=NULL) t->child[2] = assign_stmt(); //2 //incremento
   match(RPAREN);
   if (t!=NULL) t->child[3] = stmt_sequence(); //3 //corpo
   match(ENDFOR);
